@@ -1,0 +1,21 @@
+# Build output
+build/
+out/
+
+# IDE
+.vs/
+.vscode/
+*.user
+
+# vcpkg installed packages
+vcpkg_installed/
+
+# Compiled binaries
+*.dll
+*.pdb
+*.exe
+*.obj
+*.lib
+
+# Logs
+*.log
