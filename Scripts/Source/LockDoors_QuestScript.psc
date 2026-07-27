@@ -26,12 +26,19 @@ Function RestoreLockedDoors()
         Return
     EndIf
 
+    ; --Claude: re-tag locked doors with the keyword too, so the perk's Lock/Unlock/Locked
+    ; label survives a save/reload (runtime keywords + BlockActivation both re-applied here).
+    Keyword lockedKW = Game.GetFormFromFile(0x810, "LockDoors.esp") as Keyword
+
     Int count = StorageUtil.FormListCount(player, "LockDoors_Locked")
     Int i = 0
     While i < count
         ObjectReference doorRef = StorageUtil.FormListGet(player, "LockDoors_Locked", i) as ObjectReference
         If doorRef
             doorRef.BlockActivation(true)
+            If lockedKW
+                PO3_SKSEFunctions.AddKeywordToRef(doorRef, lockedKW)
+            EndIf
         EndIf
         i += 1
     EndWhile

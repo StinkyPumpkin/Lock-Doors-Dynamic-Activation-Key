@@ -9,6 +9,11 @@ Function Fragment_0(ObjectReference akTargetRef, Actor akActor)
         Return
     EndIf
 
+    ; --Claude: keyword that tags doors WE locked, so the perk can relabel the activate
+    ; prompt (Lock / Unlock / Locked). Resolved by FormID so a perk fragment needs no
+    ; property fill; guarded, so this no-ops safely if the keyword record isn't present.
+    Keyword lockedKW = Game.GetFormFromFile(0x810, "LockDoors.esp") as Keyword
+
     ; Check if this door is already locked by us
     Int lockIndex = StorageUtil.FormListFind(akActor, "LockDoors_Locked", akTargetRef)
 
@@ -16,6 +21,9 @@ Function Fragment_0(ObjectReference akTargetRef, Actor akActor)
         ; Currently locked → unlock it
         StorageUtil.FormListRemoveAt(akActor, "LockDoors_Locked", lockIndex)
         akTargetRef.BlockActivation(false)
+        If lockedKW
+            PO3_SKSEFunctions.RemoveKeywordFromRef(akTargetRef, lockedKW)
+        EndIf
         Debug.Notification("Unlocked")
     Else
         ; Not locked → check if door is closed first
@@ -24,6 +32,9 @@ Function Fragment_0(ObjectReference akTargetRef, Actor akActor)
         If openState == 3 || openState == 4
             StorageUtil.FormListAdd(akActor, "LockDoors_Locked", akTargetRef)
             akTargetRef.BlockActivation(true)
+            If lockedKW
+                PO3_SKSEFunctions.AddKeywordToRef(akTargetRef, lockedKW)
+            EndIf
             Debug.Notification("Locked")
         Else
             Debug.Notification("Close the door first")
