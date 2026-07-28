@@ -1,2 +1,4 @@
-*.bak
-*.tmp
+build/
+install/
+pexout*/
+*.pdb
