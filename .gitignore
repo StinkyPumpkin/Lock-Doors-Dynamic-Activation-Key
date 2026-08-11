@@ -2,3 +2,4 @@ build/
 install/
 pexout*/
 *.pdb
+build_log*.txt
